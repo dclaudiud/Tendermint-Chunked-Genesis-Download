@@ -27,14 +27,17 @@ class UnsuccessfulHttpRequest(BaseException):
 
 # print the progress on a single line
 def __update_progress__(current, total):
-    progress = int(current / total * 100)
+    progress = int(float(current) / float(total) * 100)
     sys.stdout.write('\r {0}/{1} [{2}] {3}%'.format(current, total, '#' * progress + ' ' * (100 - progress), progress))
     sys.stdout.flush()
 
 
 # check whether the node is fully synchronized or not
 def __check_sync_status__(url):
-    status = requests.get(url + '/status', allow_redirects=True)
+    try:
+        status = requests.get(url + '/status', allow_redirects=True)
+    except Exception:
+        raise InvalidRPC
 
     if not status.ok:
         raise UnsuccessfulHttpRequest(status.url, status.status_code)
@@ -71,13 +74,13 @@ def download_genesis(url=None):
 
     # delete the old local genesis.json file if exists
     try:
-        os.remove('../../genesis.json')
+        os.remove('./genesis.json')
     except OSError:
         pass
 
     # create a new genesis.json file and write the first chunk
-    genesis_file = open('../../genesis.json', 'a')
-    genesis_file.write(chunk_data.decode())
+    genesis_file = open('./genesis.json', 'a')
+    genesis_file.write(chunk_data if type(chunk_data) is str else chunk_data.decode())
 
     # iterate through all the chunks and append them to the file
     while chunk_index + 1 < total_chunks:
@@ -90,7 +93,7 @@ def download_genesis(url=None):
         txt_data = chunk.text
         json_data = json.loads(txt_data)
         chunk_data = base64.b64decode(json_data['result']['data'])
-        genesis_file.write(chunk_data.decode())
+        genesis_file.write(chunk_data if type(chunk_data) is str else chunk_data.decode())
 
     # close the genesis file
     genesis_file.close()

@@ -13,7 +13,7 @@ Import the `tendermint_chunked_genesis_download` package and call the `download_
 ```
 import tendermint_chunked_genesis_download as tcgd
 
-ccgd.download_genesis('https://evmos-rpc.evmosis.com')
+tcgd.download_genesis('https://evmos-rpc.evmosis.com')
 ```
 
 ## Using from command line

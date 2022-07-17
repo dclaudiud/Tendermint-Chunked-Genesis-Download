@@ -1,3 +1,6 @@
-vent/
+venv/
 .idea/
 .git/
+dist/
+tendermint_chunked_genesis_download.egg-info/
+genesis.json
