@@ -88,6 +88,7 @@ def download_genesis(url=None):
         __update_progress__(chunk_index, total_chunks - 1)
         chunk = requests.get('{url}/genesis_chunked?chunk={chunk_no}'.format(url=url, chunk_no=str(chunk_index)),
                              allow_redirects=True)
+
         if not chunk.ok:
             raise UnsuccessfulHttpRequest(chunk.url, chunk.status_code)
         txt_data = chunk.text
